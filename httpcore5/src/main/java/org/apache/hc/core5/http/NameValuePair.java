@@ -32,6 +32,7 @@ package org.apache.hc.core5.http;
  *
  * @since 4.0
  */
+//name和value对
 public interface NameValuePair {
 
     /**

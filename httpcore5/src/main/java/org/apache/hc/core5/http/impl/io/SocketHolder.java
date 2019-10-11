@@ -41,6 +41,7 @@ import org.apache.hc.core5.util.Args;
  *
  * @since 5.0
  */
+//持有Socket连接和对应的输入输出流
 public class SocketHolder {
 
     private final Socket socket;

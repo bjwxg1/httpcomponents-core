@@ -40,6 +40,7 @@ import org.apache.hc.core5.util.Timeout;
  *
  * @since 4.0
  */
+//通用HttpConnection 接口
 public interface HttpConnection extends ModalCloseable {
 
     /**
@@ -48,6 +49,7 @@ public interface HttpConnection extends ModalCloseable {
      * different thread to force shutdown of the connection. Use {@link #close shutdown} instead.
      */
     @Override
+    //优雅的关闭Http底层的Socket链接，在关闭链接前会刷新output buffer
     void close() throws IOException;
 
     /**

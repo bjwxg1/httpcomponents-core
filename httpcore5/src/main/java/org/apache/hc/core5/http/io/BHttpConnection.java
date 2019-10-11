@@ -36,6 +36,7 @@ import org.apache.hc.core5.http.HttpConnection;
  *
  * @since 5.0
  */
+//Blocking Http connection接口
 public interface BHttpConnection extends HttpConnection {
 
     /**
@@ -65,6 +66,7 @@ public interface BHttpConnection extends HttpConnection {
      *          likely to succeed, or {@code false} if they are likely
      *          to fail and this connection should be closed
      */
+    //判断链接是否可用
     boolean isStale() throws IOException;
 
     /**
@@ -72,6 +74,7 @@ public interface BHttpConnection extends HttpConnection {
      *
      * @throws java.io.IOException in case of an I/O error
      */
+    //刷新所有的输出缓冲
     void flush() throws IOException;
 
 }

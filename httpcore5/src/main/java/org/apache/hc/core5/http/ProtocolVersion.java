@@ -45,6 +45,7 @@ import org.apache.hc.core5.util.Args;
  *
  * @since 4.0
  */
+//定义协议版本信息
 @Contract(threading = ThreadingBehavior.IMMUTABLE)
 public class ProtocolVersion implements Serializable {
 

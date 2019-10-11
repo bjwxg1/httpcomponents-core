@@ -41,6 +41,7 @@ import org.apache.hc.core5.http.protocol.HttpContext;
  *
  * @since 4.0
  */
+//判断一个链接是否可以重用
 @Contract(threading = ThreadingBehavior.STATELESS)
 public interface ConnectionReuseStrategy {
 

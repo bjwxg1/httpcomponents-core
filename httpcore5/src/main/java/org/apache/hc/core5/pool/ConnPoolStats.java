@@ -33,6 +33,7 @@ package org.apache.hc.core5.pool;
  *   connection.
  * @since 4.2
  */
+//Connection pool的统计接口
 public interface ConnPoolStats<T> {
 
     PoolStats getTotalStats();

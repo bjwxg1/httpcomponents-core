@@ -57,6 +57,7 @@ import org.apache.hc.core5.util.CharArrayBuffer;
 public class SessionInputBufferImpl implements SessionInputBuffer {
 
     private final BasicHttpTransportMetrics metrics;
+    //字节数组
     private final byte[] buffer;
     private final ByteArrayBuffer lineBuffer;
     private final int minChunkLimit;

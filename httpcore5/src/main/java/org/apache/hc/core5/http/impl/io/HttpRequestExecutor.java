@@ -75,6 +75,7 @@ public class HttpRequestExecutor {
     public static final int DEFAULT_WAIT_FOR_CONTINUE = 3000;
 
     private final int waitForContinue;
+    //http链接重用策略，用于判断http底层的链接是否可以重复使用
     private final ConnectionReuseStrategy connReuseStrategy;
     private final Http1StreamListener streamListener;
 
@@ -124,6 +125,7 @@ public class HttpRequestExecutor {
         Args.notNull(conn, "Client connection");
         Args.notNull(context, "HTTP context");
         try {
+            //设置context信息
             context.setAttribute(HttpCoreContext.SSL_SESSION, conn.getSSLSession());
             context.setAttribute(HttpCoreContext.CONNECTION_ENDPOINT, conn.getEndpointDetails());
             final ProtocolVersion transportVersion = request.getVersion();
@@ -133,7 +135,7 @@ public class HttpRequestExecutor {
                 }
                 context.setProtocolVersion(transportVersion);
             }
-
+            //发送httprequest头信息
             conn.sendRequestHeader(request);
             if (streamListener != null) {
                 streamListener.onRequestHead(conn, request);
@@ -141,15 +143,20 @@ public class HttpRequestExecutor {
             boolean expectContinue = false;
             final HttpEntity entity = request.getEntity();
             if (entity != null) {
+                //Expect:100-Continue握手的目的，是为了允许客户端在发送请求内容之前，判断源服务器是否愿意接受 请求（基于请求头部）。
+                //Expect:100-Continue握手需谨慎使用，因为遇到不支持HTTP/1.1协议的服务器或者代理时会引起问题。
                 final Header expect = request.getFirstHeader(HttpHeaders.EXPECT);
                 expectContinue = expect != null && HeaderElements.CONTINUE.equalsIgnoreCase(expect.getValue());
+                //如果expectContinue为false则发送请求提信息
                 if (!expectContinue) {
                     conn.sendRequestEntity(request);
                 }
             }
+            //刷新输出
             conn.flush();
             ClassicHttpResponse response = null;
             while (response == null) {
+                //如果expectContinue为true
                 if (expectContinue) {
                     if (conn.isDataAvailable(this.waitForContinue)) {
                         response = conn.receiveResponseHeader();
@@ -157,9 +164,12 @@ public class HttpRequestExecutor {
                             streamListener.onResponseHead(conn, response);
                         }
                         final int status = response.getCode();
+                        //因为expectContinue为true，说明发送request的header中带有except header信息，
+                        // 并且请求时只发送了请求行和请求头信息，如果服务器返回100，标明可以继续发送请求体信息
                         if (status == HttpStatus.SC_CONTINUE) {
                             // discard 100-continue
                             response = null;
+                            //继续发送请求体
                             conn.sendRequestEntity(request);
                         } else if (status < HttpStatus.SC_SUCCESS) {
                             if (informationCallback != null) {
@@ -167,7 +177,9 @@ public class HttpRequestExecutor {
                             }
                             response = null;
                             continue;
-                        } else if (status >= HttpStatus.SC_CLIENT_ERROR){
+                        }
+                        //如果返回400，关闭连接
+                        else if (status >= HttpStatus.SC_CLIENT_ERROR){
                             conn.terminateRequest(request);
                         } else {
                             conn.sendRequestEntity(request);
@@ -178,6 +190,7 @@ public class HttpRequestExecutor {
                     conn.flush();
                     expectContinue = false;
                 } else {
+                    //接收response header信息
                     response = conn.receiveResponseHeader();
                     if (streamListener != null) {
                         streamListener.onResponseHead(conn, response);
@@ -289,6 +302,7 @@ public class HttpRequestExecutor {
      * @return {@code true} is the connection can be kept-alive and re-used.
      * @throws IOException in case of an I/O error.
      */
+    //判断当前链接可以keep-alive
     public boolean keepAlive(
             final ClassicHttpRequest request,
             final ClassicHttpResponse response,

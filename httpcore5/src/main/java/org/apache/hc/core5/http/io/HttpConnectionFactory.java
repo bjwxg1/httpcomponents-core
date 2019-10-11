@@ -37,6 +37,7 @@ import org.apache.hc.core5.http.HttpConnection;
  *
  * @since 4.3
  */
+//HttpConnection工厂
 public interface HttpConnectionFactory<T extends HttpConnection> {
 
     T createConnection(Socket socket) throws IOException;

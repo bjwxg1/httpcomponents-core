@@ -51,6 +51,7 @@ public interface HttpClientConnection extends BHttpConnection {
      *
      * @since 5.0
      */
+    //返回链接是否连续和可复用；如果返回false表示不可复用
     boolean isConsistent();
 
     /**
@@ -59,6 +60,7 @@ public interface HttpClientConnection extends BHttpConnection {
      * @throws HttpException in case of HTTP protocol violation
      * @throws IOException in case of an I/O error
      */
+    //发送请求行和请求头信息
     void sendRequestHeader(ClassicHttpRequest request)
         throws HttpException, IOException;
 
@@ -74,6 +76,7 @@ public interface HttpClientConnection extends BHttpConnection {
      *
      * @since 5.0
      */
+    //终止链接
     void terminateRequest(ClassicHttpRequest request)
             throws HttpException, IOException;
 
@@ -83,6 +86,7 @@ public interface HttpClientConnection extends BHttpConnection {
      * @throws HttpException in case of HTTP protocol violation
      * @throws IOException in case of an I/O error
      */
+    //发送请求体
     void sendRequestEntity(ClassicHttpRequest request)
         throws HttpException, IOException;
 
@@ -96,6 +100,7 @@ public interface HttpClientConnection extends BHttpConnection {
      * @throws HttpException in case of HTTP protocol violation
      * @throws IOException in case of an I/O error
      */
+    //接收响应行和响应头信息
     ClassicHttpResponse receiveResponseHeader()
         throws HttpException, IOException;
 
@@ -107,6 +112,7 @@ public interface HttpClientConnection extends BHttpConnection {
      * @throws HttpException in case of HTTP protocol violation
      * @throws IOException in case of an I/O error
      */
+    //接收响应体
     void receiveResponseEntity(ClassicHttpResponse response)
         throws HttpException, IOException;
 

@@ -32,6 +32,7 @@ package org.apache.hc.core5.net;
  *
  * @since 5.0
  */
+//使用名称和端口来标识通信对端
 public interface NamedEndpoint {
 
     /**

@@ -43,6 +43,7 @@ public interface MessageHeaders {
      * @param name the header name to check for.
      * @return true if at least one header with this name is present.
      */
+    //判断是否包含特定的header信息
     boolean containsHeader(String name);
 
     /**
@@ -51,6 +52,7 @@ public interface MessageHeaders {
      * @param name the header name to check for.
      * @return number of occurrences of the header in the message.
      */
+    //返回特定header的次数
     int countHeaders(String name);
 
     /**
@@ -75,6 +77,7 @@ public interface MessageHeaders {
      * @return the first header or {@code null}
      * @throws ProtocolException in case multiple headers with the given name are found.
      */
+    //获取特定header
     Header getHeader(String name) throws ProtocolException;
 
     /**
@@ -83,6 +86,7 @@ public interface MessageHeaders {
      *
      * @return all the headers of this message
      */
+    //获取所有Header
     Header[] getHeaders();
 
     /**

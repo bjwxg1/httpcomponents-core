@@ -92,6 +92,7 @@ class BHttpConnectionBase implements BHttpConnection {
         this.socketHolderRef = new AtomicReference<>();
     }
 
+    //判断Socket连接是否打开
     protected SocketHolder ensureOpen() throws IOException {
         final SocketHolder socketHolder = this.socketHolderRef.get();
         if (socketHolder == null) {
@@ -110,6 +111,7 @@ class BHttpConnectionBase implements BHttpConnection {
      * @param socket the socket.
      * @throws IOException in case of an I/O error.
      */
+    //将socket连接和当前connection绑定
     protected void bind(final Socket socket) throws IOException {
         Args.notNull(socket, "Socket");
         bind(new SocketHolder(socket));

@@ -47,6 +47,7 @@ import org.apache.hc.core5.http.ProtocolVersion;
  *
  * @since 4.0
  */
+//Http请求的上下文信息
 public interface HttpContext {
 
     /** The prefix reserved for use by HTTP components. "http." */

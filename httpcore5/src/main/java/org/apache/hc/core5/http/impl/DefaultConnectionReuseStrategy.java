@@ -81,6 +81,7 @@ public class DefaultConnectionReuseStrategy implements ConnectionReuseStrategy {
         Args.notNull(response, "HTTP response");
 
         if (request != null) {
+            //获取requestHeader中的connection字段信息，如果存在且值为close，返回false
             final Iterator<String> ti = new BasicTokenIterator(request.headerIterator(HttpHeaders.CONNECTION));
             while (ti.hasNext()) {
                 final String token = ti.next();
@@ -93,6 +94,8 @@ public class DefaultConnectionReuseStrategy implements ConnectionReuseStrategy {
         // If a HTTP 204 No Content response contains a Content-length with value > 0 or Transfer-Encoding header,
         // don't reuse the connection. This is to avoid getting out-of-sync if a misbehaved HTTP server
         // returns content as part of a HTTP 204 response.
+        //如果Httpresponse的响应码为204(请求处理成功，但是数据为空)但是Content-length Header信息大于0
+        //或者包含Transfer-Encoding信息说明链接不可重用
         if (response.getCode() == HttpStatus.SC_NO_CONTENT) {
             final Header clh = response.getFirstHeader(HttpHeaders.CONTENT_LENGTH);
             if (clh != null) {
@@ -112,6 +115,7 @@ public class DefaultConnectionReuseStrategy implements ConnectionReuseStrategy {
 
         // Check for a self-terminating entity. If the end of the entity will
         // be indicated by closing the connection, there is no keep-alive.
+        //如果存在Transfer-Encoding头信息，但是值不是chunked，则返回false
         final Header teh = response.getFirstHeader(HttpHeaders.TRANSFER_ENCODING);
         if (teh != null) {
             if (!HeaderElements.CHUNKED_ENCODING.equalsIgnoreCase(teh.getValue())) {
@@ -119,6 +123,7 @@ public class DefaultConnectionReuseStrategy implements ConnectionReuseStrategy {
             }
         } else {
             final String method = request != null ? request.getMethod() : null;
+            //如果response是带Body的Response,
             if (MessageSupport.canResponseHaveBody(method, response)
                     && response.countHeaders(HttpHeaders.CONTENT_LENGTH) != 1) {
                 return false;
@@ -128,6 +133,8 @@ public class DefaultConnectionReuseStrategy implements ConnectionReuseStrategy {
         // Check for the "Connection" header. If that is absent, check for
         // the "Proxy-Connection" header. The latter is an unspecified and
         // broken but unfortunately common extension of HTTP.
+        //获取CONNECTION Header信息，如果没有则获取Proxy-Connection header信息
+        // [在浏览器开启了代理之后connection header会变成proxy-connection header]
         Iterator<Header> headerIterator = response.headerIterator(HttpHeaders.CONNECTION);
         if (!headerIterator.hasNext()) {
             headerIterator = response.headerIterator("Proxy-Connection");
@@ -135,6 +142,7 @@ public class DefaultConnectionReuseStrategy implements ConnectionReuseStrategy {
 
         final ProtocolVersion ver = context.getProtocolVersion();
         if (headerIterator.hasNext()) {
+            //如果http版本大于等于1.1，且header的值为close则返回false
             if (ver.greaterEquals(HttpVersion.HTTP_1_1)) {
                 final Iterator<String> it = new BasicTokenIterator(headerIterator);
                 while (it.hasNext()) {
@@ -145,6 +153,7 @@ public class DefaultConnectionReuseStrategy implements ConnectionReuseStrategy {
                 }
                 return true;
             }
+            //如果http版本小于1.1，但是header的值是keep-alive返回true
             final Iterator<String> it = new BasicTokenIterator(headerIterator);
             while (it.hasNext()) {
                 final String token = it.next();

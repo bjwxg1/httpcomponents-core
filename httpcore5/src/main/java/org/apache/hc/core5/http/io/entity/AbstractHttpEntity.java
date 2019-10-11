@@ -49,8 +49,9 @@ import org.apache.hc.core5.util.Args;
 public abstract class AbstractHttpEntity implements HttpEntity {
 
     static final int OUTPUT_BUFFER_SIZE = 4096;
-
+    //指定内容类型例如[application/octet-stream;charset=GBK]
     private final String contentType;
+    //制定编码格式，例如[gzip]
     private final String contentEncoding;
     private final boolean chunked;
 

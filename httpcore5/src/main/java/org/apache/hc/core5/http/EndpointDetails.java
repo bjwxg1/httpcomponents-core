@@ -37,6 +37,7 @@ import org.apache.hc.core5.util.Timeout;
  *
  * @since 5.0
  */
+//通信对端信息
 public abstract class EndpointDetails implements HttpConnectionMetrics {
 
     private final SocketAddress remoteAddress;

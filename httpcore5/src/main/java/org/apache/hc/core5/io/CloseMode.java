@@ -32,8 +32,10 @@ package org.apache.hc.core5.io;
  *
  * @since 5.0
  */
+//HttpConnection关闭模式，
 public enum CloseMode {
 
-    IMMEDIATE, GRACEFUL
+    IMMEDIATE,//立即关闭
+    GRACEFUL //优雅关闭模式
 
 }

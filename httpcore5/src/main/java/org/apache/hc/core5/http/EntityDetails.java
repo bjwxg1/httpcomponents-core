@@ -34,6 +34,7 @@ import java.util.Set;
  *
  * @since 5.0
  */
+//http request和response消息中中的实体信息
 public interface EntityDetails {
 
     /**
@@ -58,6 +59,7 @@ public interface EntityDetails {
      * but should respect the primary purpose.
      * </p>
      */
+    //返回entity的分块信息
     boolean isChunked();
 
     /**

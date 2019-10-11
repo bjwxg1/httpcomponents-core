@@ -32,6 +32,7 @@ package org.apache.hc.core5.http;
  *
  * @since 4.0
  */
+//HttpConnection的一些监控信息
 public interface HttpConnectionMetrics {
 
     /**

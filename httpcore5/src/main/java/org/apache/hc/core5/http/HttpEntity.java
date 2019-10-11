@@ -74,6 +74,7 @@ public interface HttpEntity extends EntityDetails, Closeable {
      * can be called more than once whereas a non-repeatable entity's can not.
      * @return true if the entity is repeatable, false otherwise.
      */
+    //HttpEntity的流是否可以重复消费和写入
     boolean isRepeatable();
 
     /**
@@ -97,6 +98,7 @@ public interface HttpEntity extends EntityDetails, Closeable {
      *
      * @see #isRepeatable()
      */
+    //获取InputStream
     InputStream getContent() throws IOException, UnsupportedOperationException;
 
     /**
@@ -111,6 +113,7 @@ public interface HttpEntity extends EntityDetails, Closeable {
      *
      * @throws IOException if an I/O error occurs
      */
+    //写entity content到OutputStream
     void writeTo(OutputStream outStream) throws IOException;
 
     /**
@@ -123,6 +126,7 @@ public interface HttpEntity extends EntityDetails, Closeable {
      * @return  {@code true} if the entity content is streamed,
      *          {@code false} otherwise
      */
+    //返回entity的内容是否依赖于底层的stream
     boolean isStreaming(); // don't expect an exception here
 
     /**

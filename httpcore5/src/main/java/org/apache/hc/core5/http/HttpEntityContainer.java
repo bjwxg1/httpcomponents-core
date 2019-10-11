@@ -32,6 +32,7 @@ package org.apache.hc.core5.http;
  *
  * @since 5.0
  */
+//HttpEntity容器
 public interface HttpEntityContainer {
 
     /**
