@@ -87,6 +87,7 @@ public class HttpRequestExecutor {
      * @param request   the request, to obtain the executed method
      * @param response  the response, to obtain the status code
      */
+    //判断response是否具有响应体信息
     protected boolean canResponseHaveBody(final HttpRequest request,
                                           final HttpResponse response) {
 
@@ -112,6 +113,7 @@ public class HttpRequestExecutor {
      * @throws HttpException in case of HTTP protocol violation or a processing
      *   problem.
      */
+    //发送HttpRequest获取响应
     public HttpResponse execute(
             final HttpRequest request,
             final HttpClientConnection conn,
@@ -120,7 +122,9 @@ public class HttpRequestExecutor {
         Args.notNull(conn, "Client connection");
         Args.notNull(context, "HTTP context");
         try {
+            //发送http请求，获取响应
             HttpResponse response = doSendRequest(request, conn, context);
+            //如果获取的response为null，说明上一步获得的响应status为100，需要重新接受服务器端的响应信息
             if (response == null) {
                 response = doReceiveResponse(request, conn, context);
             }
@@ -201,15 +205,16 @@ public class HttpRequestExecutor {
 
         context.setAttribute(HttpCoreContext.HTTP_CONNECTION, conn);
         context.setAttribute(HttpCoreContext.HTTP_REQ_SENT, Boolean.FALSE);
-
+        //发送Http头信息
         conn.sendRequestHeader(request);
         if (request instanceof HttpEntityEnclosingRequest) {
             // Check for expect-continue handshake. We have to flush the
             // headers and wait for an 100-continue response to handle it.
             // If we get a different response, we must not send the entity.
+            //如果http请求中带有except头信息，并且excepte头信息的值为100-continue，且http的版本大于1.0
+            //此时需要先发送header信息，然后根据server端的响应判断是否发送requestEntity信息
             boolean sendentity = true;
-            final ProtocolVersion ver =
-                request.getRequestLine().getProtocolVersion();
+            final ProtocolVersion ver = request.getRequestLine().getProtocolVersion();
             if (((HttpEntityEnclosingRequest) request).expectContinue() &&
                 !ver.lessEquals(HttpVersion.HTTP_1_0)) {
 
@@ -217,11 +222,13 @@ public class HttpRequestExecutor {
                 // As suggested by RFC 2616 section 8.2.3, we don't wait for a
                 // 100-continue response forever. On timeout, send the entity.
                 if (conn.isResponseAvailable(this.waitForContinue)) {
+                    //读取服务端响应信息
                     response = conn.receiveResponseHeader();
                     if (canResponseHaveBody(request, response)) {
                         conn.receiveResponseEntity(response);
                     }
                     final int status = response.getStatusLine().getStatusCode();
+                    //如果status小于200
                     if (status < 200) {
                         if (status != HttpStatus.SC_CONTINUE) {
                             throw new ProtocolException(
@@ -229,12 +236,15 @@ public class HttpRequestExecutor {
                         }
                         // discard 100-continue
                         response = null;
-                    } else {
+                    }
+                    //如果大于200，说明不需要发送entity
+                    else {
                         sendentity = false;
                     }
                 }
             }
             if (sendentity) {
+                //发送上一步未发送的http request entity信息
                 conn.sendRequestEntity((HttpEntityEnclosingRequest) request);
             }
         }
@@ -268,6 +278,7 @@ public class HttpRequestExecutor {
         HttpResponse response = null;
         int statusCode = 0;
 
+        //如果response为空或者statusCode小于200，循环获取response
         while (response == null || statusCode < HttpStatus.SC_OK) {
 
             response = conn.receiveResponseHeader();

@@ -40,13 +40,17 @@ import java.io.Serializable;
  * @since 4.2
  */
 @Contract(threading = ThreadingBehavior.IMMUTABLE)
+//ConnectionPool的统计信息
 public class PoolStats implements Serializable {
 
     private static final long serialVersionUID = -2807686144795228544L;
-
+    //已经租赁的Connection数量[正在使用的]
     private final int leased;
+    //阻塞的，等待获取Connection的请求数量
     private final int pending;
+    //空闲的、可用的连接数量
     private final int available;
+    //允许的最大连接数
     private final int max;
 
     public PoolStats(final int leased, final int pending, final int free, final int max) {

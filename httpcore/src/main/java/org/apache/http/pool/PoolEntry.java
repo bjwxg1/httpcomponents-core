@@ -56,9 +56,9 @@ public abstract class PoolEntry<T, C> {
     private final C conn;
     private final long created;
     private final long validityDeadline;
-
+    //PoolEntry 空闲截止时间
     private long updated;
-
+    //PoolEntry 过期时间
     private long expiry;
 
     private volatile Object state;

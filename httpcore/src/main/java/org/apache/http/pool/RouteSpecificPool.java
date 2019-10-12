@@ -72,6 +72,7 @@ abstract class RouteSpecificPool<T, C, E extends PoolEntry<T, C>> {
         return this.available.size() + this.leased.size();
     }
 
+    //如果可用的entry不为空，获取可用的Entry
     public E getFree(final Object state) {
         if (!this.available.isEmpty()) {
             if (state != null) {
