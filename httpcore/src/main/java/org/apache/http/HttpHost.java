@@ -51,13 +51,16 @@ public final class HttpHost implements Cloneable, Serializable {
     public static final String DEFAULT_SCHEME_NAME = "http";
 
     /** The host to use. */
+    //主机名[ip或者域名]
     protected final String hostname;
 
+    //小写的主机名
     /** The lowercase host, for {@link #equals} and {@link #hashCode}. */
     protected final String lcHostname;
 
 
     /** The port to use, defaults to -1 if not set. */
+    //端口号
     protected final int port;
 
     /** The scheme (lowercased) */

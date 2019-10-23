@@ -52,12 +52,15 @@ public class ProtocolVersion implements Serializable, Cloneable {
 
 
     /** Name of the protocol. */
+    //协议名
     protected final String protocol;
 
     /** Major version number of the protocol */
+    //主版本号
     protected final int major;
 
     /** Minor version number of the protocol */
+    //次版本号
     protected final int minor;
 
 

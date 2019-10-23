@@ -45,6 +45,7 @@ import org.apache.http.util.CharArrayBuffer;
  *
  * @since 4.0
  */
+//Http header集合，HeaderGroup允许多个header具有相同的名字，并且追踪header添加的顺序
 public class HeaderGroup implements Cloneable, Serializable {
 
     private static final long serialVersionUID = 2608834160639271617L;
@@ -52,6 +53,7 @@ public class HeaderGroup implements Cloneable, Serializable {
     private static final Header[] EMPTY = new Header[] {};
 
     /** The list of headers for this group, in the order in which they were added */
+    //header集合，以添加的顺序保存
     private final List<Header> headers;
 
     /**
@@ -100,6 +102,7 @@ public class HeaderGroup implements Cloneable, Serializable {
      * @param header the new header that should replace the first header with the same
      * name if present in the list.
      */
+    //更新header，如果不存在则添加
     public void updateHeader(final Header header) {
         if (header == null) {
             return;

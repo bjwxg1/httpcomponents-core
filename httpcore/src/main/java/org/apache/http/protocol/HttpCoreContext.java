@@ -70,6 +70,7 @@ public class HttpCoreContext implements HttpContext {
      * the flag indicating whether the actual request has been fully transmitted
      * to the target host.
      */
+    //请求是否已经发送标识
     public static final String HTTP_REQ_SENT    = "http.request_sent";
 
     public static HttpCoreContext create() {

@@ -42,12 +42,14 @@ import org.apache.http.util.Args;
 @SuppressWarnings("deprecation")
 public abstract class AbstractHttpMessage implements HttpMessage {
 
+    //Http Header组
     protected HeaderGroup headergroup;
 
     /**
      * @deprecated Do not use.
      */
     @Deprecated
+    //http 参数
     protected HttpParams params;
 
     /**

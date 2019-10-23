@@ -86,6 +86,7 @@ public interface HttpEntity {
      * @return  {@code true} if chunked encoding is preferred for this
      *          entity, or {@code false} if it is not
      */
+    //返回此Entity在进行发送时是否需要使用Chunked编码
     boolean isChunked();
 
     /**

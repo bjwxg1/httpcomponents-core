@@ -50,6 +50,7 @@ import org.apache.http.util.Args;
  * @since 4.0
  */
 @Contract(threading = ThreadingBehavior.IMMUTABLE)
+//用户添加host header头信息
 public class RequestTargetHost implements HttpRequestInterceptor {
 
     public RequestTargetHost() {

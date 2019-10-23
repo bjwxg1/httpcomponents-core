@@ -51,9 +51,12 @@ import org.apache.http.util.Args;
  *
  * @since 4.0
  */
+//主要处理HttpEntityEnclosingRequest，主要用于计算Content-Length和添加Transfer-encoding属性
 @Contract(threading = ThreadingBehavior.IMMUTABLE)
 public class RequestContent implements HttpRequestInterceptor {
 
+    //是否允许RequestContent覆盖原有的Content-Length和Transfer-Encoding属性
+    //如果为false，且原始请求包含了Content-Length和Transfer-Encoding header会抛出异常
     private final boolean overwrite;
 
     /**
@@ -97,6 +100,7 @@ public class RequestContent implements HttpRequestInterceptor {
                     throw new ProtocolException("Content-Length header already present");
                 }
             }
+            //获取协议版本
             final ProtocolVersion ver = request.getRequestLine().getProtocolVersion();
             final HttpEntity entity = ((HttpEntityEnclosingRequest)request).getEntity();
             if (entity == null) {
@@ -104,7 +108,9 @@ public class RequestContent implements HttpRequestInterceptor {
                 return;
             }
             // Must specify a transfer encoding or a content length
+            //如果entity支持chunked编码，或者ContentLength小于0
             if (entity.isChunked() || entity.getContentLength() < 0) {
+                //版本小于1.0的协议不支持chunked编码编码
                 if (ver.lessEquals(HttpVersion.HTTP_1_0)) {
                     throw new ProtocolException(
                             "Chunked transfer encoding not allowed for " + ver);
@@ -114,11 +120,13 @@ public class RequestContent implements HttpRequestInterceptor {
                 request.addHeader(HTTP.CONTENT_LEN, Long.toString(entity.getContentLength()));
             }
             // Specify a content type if known
+            //设置content-type
             if (entity.getContentType() != null && !request.containsHeader(
                     HTTP.CONTENT_TYPE )) {
                 request.addHeader(entity.getContentType());
             }
             // Specify a content encoding if known
+            //设置内容编码方式【gzip或者deflate】
             if (entity.getContentEncoding() != null && !request.containsHeader(
                     HTTP.CONTENT_ENCODING)) {
                 request.addHeader(entity.getContentEncoding());

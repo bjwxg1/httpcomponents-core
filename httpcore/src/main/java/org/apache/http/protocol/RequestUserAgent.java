@@ -45,6 +45,7 @@ import org.apache.http.util.Args;
  * @since 4.0
  */
 @SuppressWarnings("deprecation")
+//添加User-agent Header头信息
 @Contract(threading = ThreadingBehavior.IMMUTABLE)
 public class RequestUserAgent implements HttpRequestInterceptor {
 

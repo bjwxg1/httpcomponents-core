@@ -37,17 +37,24 @@ import org.apache.http.util.Args;
  * @since 4.3
  */
 @Contract(threading = ThreadingBehavior.IMMUTABLE)
+//Socket 配置
 public class SocketConfig implements Cloneable {
 
     public static final SocketConfig DEFAULT = new Builder().build();
-
+    //设置socket调用InputStream读数据的超时时间，以毫秒为单位，如果超过这个时候，会抛出java.net.SocketTimeoutException。
     private final int soTimeout;
+    //
     private final boolean soReuseAddress;
+    //关闭连接时是否等待soLinger，以确保数据发送完成
     private final int soLinger;
     private final boolean soKeepAlive;
+    //是否禁用纳格算法
     private final boolean tcpNoDelay;
+    //发送缓冲区大小
     private final int sndBufSize;
+    //发送缓冲区大小
     private final int rcvBufSize;
+    //已完成连接队列的大小
     private final int backlogSize;
 
     SocketConfig(

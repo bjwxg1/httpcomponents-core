@@ -38,12 +38,13 @@ package org.apache.http;
  *
  * @since 4.0
  */
+//Http requestLine 接口
 public interface RequestLine {
-
+    //获取方法
     String getMethod();
-
+    //获取协议版本
     ProtocolVersion getProtocolVersion();
-
+    //获取URL
     String getUri();
 
 }

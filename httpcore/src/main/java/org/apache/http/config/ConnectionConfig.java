@@ -41,10 +41,11 @@ import org.apache.http.util.Args;
  * @since 4.3
  */
 @Contract(threading = ThreadingBehavior.IMMUTABLE)
+//Http连接配置
 public class ConnectionConfig implements Cloneable {
 
     public static final ConnectionConfig DEFAULT = new Builder().build();
-
+    //缓冲区大小
     private final int bufferSize;
     private final int fragmentSizeHint;
     private final Charset charset;

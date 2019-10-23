@@ -83,6 +83,7 @@ public class DefaultConnectionReuseStrategy implements ConnectionReuseStrategy {
         // If a HTTP 204 No Content response contains a Content-length with value > 0 or Transfer-Encoding,
         // don't reuse the connection. This is to avoid getting out-of-sync if a misbehaved HTTP server
         // returns content as part of a HTTP 204 response.
+        //如果响应码为204[表示该响应没有reponse Entity]，但是Content-Length大于0或者Transfer-Encoding不为空，返回false
         if (response.getStatusLine().getStatusCode() == HttpStatus.SC_NO_CONTENT) {
             final Header clh = response.getFirstHeader(HTTP.CONTENT_LEN);
             if (clh != null) {
@@ -102,6 +103,7 @@ public class DefaultConnectionReuseStrategy implements ConnectionReuseStrategy {
             }
         }
 
+        //如果HttpRequest存在Connection header信息，且header的值包括Close，说明连接不需要重用
         final HttpRequest request = (HttpRequest) context.getAttribute(HttpCoreContext.HTTP_REQUEST);
         if (request != null) {
             try {
@@ -122,11 +124,13 @@ public class DefaultConnectionReuseStrategy implements ConnectionReuseStrategy {
         // be indicated by closing the connection, there is no keep-alive.
         final ProtocolVersion ver = response.getStatusLine().getProtocolVersion();
         final Header teh = response.getFirstHeader(HTTP.TRANSFER_ENCODING);
+        //如果Transfer-Encoding header信息不为空，且值不等chunked返回fanlse
         if (teh != null) {
             if (!HTTP.CHUNK_CODING.equalsIgnoreCase(teh.getValue())) {
                 return false;
             }
         } else {
+            //http响应包含response信息，但是Content-Length为0返回false；
             if (canResponseHaveBody(request, response)) {
                 final Header[] clhs = response.getHeaders(HTTP.CONTENT_LEN);
                 // Do not reuse if not properly content-length delimited
@@ -149,6 +153,7 @@ public class DefaultConnectionReuseStrategy implements ConnectionReuseStrategy {
         // Check for the "Connection" header. If that is absent, check for
         // the "Proxy-Connection" header. The latter is an unspecified and
         // broken but unfortunately common extension of HTTP.
+        //获取"Connection" header.或者"Proxy-Connection" header
         HeaderIterator headerIterator = response.headerIterator(HTTP.CONN_DIRECTIVE);
         if (!headerIterator.hasNext()) {
             headerIterator = response.headerIterator("Proxy-Connection");
@@ -202,6 +207,7 @@ public class DefaultConnectionReuseStrategy implements ConnectionReuseStrategy {
         }
 
         // default since HTTP/1.1 is persistent, before it was non-persistent
+        //如果版本小于1.0返回false
         return !ver.lessEquals(HttpVersion.HTTP_1_0);
     }
 

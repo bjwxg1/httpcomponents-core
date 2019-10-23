@@ -60,6 +60,7 @@ public class HttpRequestExecutor {
 
     public static final int DEFAULT_WAIT_FOR_CONTINUE = 3000;
 
+    //发送Http头信息后，等待Http Response信息的超时时间
     private final int waitForContinue;
 
     /**
@@ -221,6 +222,7 @@ public class HttpRequestExecutor {
                 conn.flush();
                 // As suggested by RFC 2616 section 8.2.3, we don't wait for a
                 // 100-continue response forever. On timeout, send the entity.
+                //等待100-continue响应，如果在waitForContinue时间内没有收到响应，直接发送entity
                 if (conn.isResponseAvailable(this.waitForContinue)) {
                     //读取服务端响应信息
                     response = conn.receiveResponseHeader();
@@ -249,6 +251,7 @@ public class HttpRequestExecutor {
             }
         }
         conn.flush();
+        //设置HTTP_REQ_SENT为True标识，Http请求已发送
         context.setAttribute(HttpCoreContext.HTTP_REQ_SENT, Boolean.TRUE);
         return response;
     }
@@ -280,9 +283,9 @@ public class HttpRequestExecutor {
 
         //如果response为空或者statusCode小于200，循环获取response
         while (response == null || statusCode < HttpStatus.SC_OK) {
-
             response = conn.receiveResponseHeader();
             statusCode = response.getStatusLine().getStatusCode();
+            //TODO
             if (statusCode < HttpStatus.SC_CONTINUE) {
                 throw new ProtocolException("Invalid response: " + response.getStatusLine());
             }
